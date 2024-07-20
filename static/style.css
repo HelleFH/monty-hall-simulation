@@ -22,23 +22,69 @@ body {
   justify-content: center;
   align-items: center;
 }
-main {
-  width: 100%;
-  max-width: 64rem;
-  margin: 0 auto;
+
+#stats {
+  margin: 20px;
+}
+
+.stat-panel {
+  margin-bottom: 20px;
+}
+
+.stats-item-container {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  padding: 2rem;
+  margin-bottom: 10px;
+}
+
+.stats-item {
+  margin-right: 20px;
+}
+
+.single-chart {
+  width: 100px;
+  height: 100px;
+  margin-top: 10px;
 }
 
 
-.circular-chart {
-  display: block;
-  margin: 10px auto;
-  max-width: 60%;
-  max-height: 250px;
+.percentage {
+  font-size: 0.6em;
+  fill: #333;
 }
+
+/* Loading spinner styles */
+.spinner {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.header {
+  padding-top: 1em;
+}
+
+.spinner div {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 4px solid #3498db;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 
 .circle-bg {
   fill: none;
@@ -66,7 +112,17 @@ main {
 .circular-chart.green .circle {
   stroke: #ACF06C;
 }
-#cumulativeChart {width:95vw !important;}
+
+
+.blue .circle {
+  stroke: #2196f3;
+}
+ 
+
+#cumulativeChart {
+  width: 95vw !important;
+}
+
 .percentage {
   fill: black;
   font-size: 0.5em;
@@ -79,12 +135,13 @@ main {
   background-color: #F0CF6C;
   padding: 1em;
   width: 80%;
+  max-width: 600px;
   border-radius: 10px;
   color: black;
   display: flex;
   flex-direction: column;
   white-space: nowrap;
-align-items: center;
+  align-items: center;
 
 }
 
@@ -100,10 +157,14 @@ align-items: center;
 h1,
 h2 {
   font-family: 'play';
-  margin:0;
-  padding-bottom:0.5em;
+  margin: 0;
+  padding-bottom: 0.5em;
+  display: inline-block;
 }
-h2 {display: inline-block;}
+
+h2 {
+  display: inline-block;
+}
 
 .stats-item {
   display: flex;
@@ -130,29 +191,28 @@ h2 {display: inline-block;}
 #stats span {
   font-size: 3em;
 }
+
 .strategies-container {
   margin-top: 3em;
   display: flex;
   position: relative;
-  justify-content: center;
+  justify-content: space-between;
+  width: 100%;
 }
 
-/* Style for each stat panel */
 .stat-panel {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  flex-direction: column;
   max-width: 30%;
-  justify-content: center;
   align-items: center;
-  position: relative; 
+  position: relative;
 }
 
 .stat-panel:not(:last-child)::after {
   content: "";
   position: absolute;
   top: 0;
-  right: -15px; 
+  right: -15px;
   width: 3px;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
@@ -179,13 +239,14 @@ h2 {display: inline-block;}
   color: #f8f8f8;
   outline: 0;
 }
+
 .btn.play {
   border-color: #38B6FF;
   color: #fff;
   box-shadow: 0 0 40px 40px #38B6FF inset, 0 0 0 0 #38B6FF;
   transition: all 150ms ease-in-out;
 }
-  
+
 .btn.play:hover {
   box-shadow: 0 0 10px 0 #38B6FF inset, 0 0 10px 4px #38B6FF;
 }

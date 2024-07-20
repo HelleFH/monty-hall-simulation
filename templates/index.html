@@ -7,72 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         /* Add your custom CSS styling here */
-        #stats {
-            margin: 20px;
-        }
-        .stat-panel {
-            margin-bottom: 20px;
-        }
-        .stats-item-container {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        .stats-item {
-            margin-right: 20px;
-        }
-        .single-chart {
-            width: 100px;
-            height: 100px;
-            margin-top: 10px;
-        }
-        .circular-chart {
-            display: block;
-            margin: 0 auto;
-        }
-        .circle-bg {
-            fill: none;
-            stroke: #e6e6e6;
-            stroke-width: 3.8;
-        }
-        .circle {
-            fill: none;
-            stroke-width: 3.8;
-            transition: stroke-dasharray 1s ease;
-        }
-        .orange .circle {
-            stroke: #ffa500;
-        }
-        .green .circle {
-            stroke: #4caf50;
-        }
-        .blue .circle {
-            stroke: #2196f3;
-        }
-        .percentage {
-            font-size: 0.6em;
-            fill: #333;
-        }
-        /* Loading spinner styles */
-        .spinner {
-            display: none;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-        .spinner div {
-            width: 40px;
-            height: 40px;
-            border: 4px solid #f3f3f3;
-            border-radius: 50%;
-            border-top: 4px solid #3498db;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+       
     </style>
     <script type="text/javascript">
         $(document).ready(function() {
@@ -201,10 +136,12 @@
     </script>
 </head>
 <body>
-    <h1>Monty Hall Problem Simulation</h1>
-    <h2>Simulation Controls</h2>
+    <h1 class="header">Monty Hall Problem Simulation</h1>
+        <p>
+Simulate the Monty Hall Problem with 3 strategies, always stay, always switch and random choice.
+        </p>
     <form>
-        Number of Simulations: <input type="text" id="numSimulations"><br><br>
+        <h5>Number of Simulations per Strategy: <input type="text" id="numSimulations"><br><br></h5>
         <div type="button" id="startButton" class="btn play">Start Simulations</div>
     </form>
     <!-- Loading Spinner -->
@@ -213,7 +150,7 @@
     </div>
 
     <div id="stats">
-        <h1>Your Game Stats</h1>
+        <h1 >Your Game Stats</h1>
        <h2>Strategy</h2>
         <div class="strategies-container">
             <div id="switches" class="stat-panel">
