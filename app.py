@@ -1,11 +1,11 @@
 from flask import Flask, request, jsonify, render_template
+import os
 import random
 
 app = Flask(__name__)
 
 def stay_strategy(chances):
     carcount = 0
-    history = []
     for _ in range(chances):
         doors = [0, 0, 0]
         car_door = random.randint(0, 2)
@@ -13,13 +13,11 @@ def stay_strategy(chances):
         first_choice = random.randint(0, 2)
         if doors[first_choice] == 1:
             carcount += 1
-        history.append((carcount / (len(history) + 1)) * 100)
     win_percentage = (carcount / chances) * 100
-    return carcount, win_percentage, history
+    return carcount, win_percentage
 
 def switch_strategy(chances):
     carcount = 0
-    history = []
     for _ in range(chances):
         doors = [0, 0, 0]
         car_door = random.randint(0, 2)
@@ -30,13 +28,11 @@ def switch_strategy(chances):
         third_choice = next(x for x in range(3) if x != first_choice and x != second_choice)
         if doors[third_choice] == 1:
             carcount += 1
-        history.append((carcount / (len(history) + 1)) * 100)
     win_percentage = (carcount / chances) * 100
-    return carcount, win_percentage, history
+    return carcount, win_percentage
 
 def random_strategy(chances):
     carcount = 0
-    history = []
     for _ in range(chances):
         doors = [0, 0, 0]
         car_door = random.randint(0, 2)
@@ -50,9 +46,8 @@ def random_strategy(chances):
             final_choice = first_choice
         if doors[final_choice] == 1:
             carcount += 1
-        history.append((carcount / (len(history) + 1)) * 100)
     win_percentage = (carcount / chances) * 100
-    return carcount, win_percentage, history
+    return carcount, win_percentage
 
 @app.route('/')
 def index():
@@ -63,9 +58,14 @@ def start_simulations():
     num_simulations = int(request.form['num_simulations'])
     
     # Run simulations
-    wins_keep, percentage_keep, history_keep = stay_strategy(num_simulations)
-    wins_switch, percentage_switch, history_switch = switch_strategy(num_simulations)
-    wins_random, percentage_random, history_random = random_strategy(num_simulations)
+    wins_keep, percentage_keep = stay_strategy(num_simulations)
+    wins_switch, percentage_switch = switch_strategy(num_simulations)
+    wins_random, percentage_random = random_strategy(num_simulations)
+    
+    # Create history data
+    history_keep = [stay_strategy(i)[1] for i in range(1, num_simulations + 1)]
+    history_switch = [switch_strategy(i)[1] for i in range(1, num_simulations + 1)]
+    history_random = [random_strategy(i)[1] for i in range(1, num_simulations + 1)]
     
     response = {
         'simulation_count': num_simulations,
@@ -82,4 +82,5 @@ def start_simulations():
     return jsonify(response)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)
