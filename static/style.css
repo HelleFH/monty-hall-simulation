@@ -1,0 +1,191 @@
+@import url("https://fonts.googleapis.com/css?family=Signika+Negative:300,400&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Play:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Peralta&display=swap');
+
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+  letter-spacing: 0.04em;
+}
+
+body {
+  font-family: "Signika Negative", sans-serif;
+  font-weight: 300;
+  margin: 0;
+  padding: 0;
+  background-color: rgb(108, 240, 193, 0.6);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+main {
+  width: 100%;
+  max-width: 64rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+}
+
+
+.circular-chart {
+  display: block;
+  margin: 10px auto;
+  max-width: 60%;
+  max-height: 250px;
+}
+
+.circle-bg {
+  fill: none;
+  stroke: white;
+  stroke-width: 3.8;
+}
+
+.circle {
+  fill: none;
+  stroke-width: 2.8;
+  stroke-linecap: round;
+  animation: progress 1s ease-out forwards;
+}
+
+@keyframes progress {
+  from {
+    stroke-dasharray: 0 100;
+  }
+}
+
+.circular-chart.orange .circle {
+  stroke: #F06C9C !important;
+}
+
+.circular-chart.green .circle {
+  stroke: #ACF06C;
+}
+#cumulativeChart {width:95vw !important;}
+.percentage {
+  fill: black;
+  font-size: 0.5em;
+  font-weight: 500;
+  text-anchor: middle;
+}
+
+
+#stats {
+  background-color: #F0CF6C;
+  padding: 1em;
+  width: 80%;
+  border-radius: 10px;
+  color: black;
+  display: flex;
+  flex-direction: column;
+  white-space: nowrap;
+align-items: center;
+
+}
+
+.stats-item-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
+
+}
+
+h1,
+h2 {
+  font-family: 'play';
+  margin:0;
+  padding-bottom:0.5em;
+}
+h2 {display: inline-block;}
+
+.stats-item {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.8rem;
+  font-weight: 700;
+  width: 130px;
+  white-space: nowrap;
+
+  border-radius: 7px;
+  background-color: #fff;
+  padding: 0.5em;
+
+  p {
+    margin: 0;
+  }
+
+  span {
+    place-self: center;
+  }
+}
+
+
+#stats span {
+  font-size: 3em;
+}
+.strategies-container {
+  margin-top: 3em;
+  display: flex;
+  position: relative;
+  justify-content: center;
+}
+
+/* Style for each stat panel */
+.stat-panel {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  max-width: 30%;
+  justify-content: center;
+  align-items: center;
+  position: relative; 
+}
+
+.stat-panel:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: -15px; 
+  width: 3px;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.btn {
+  appearance: none;
+  background-color: transparent;
+  border: 2px solid var(--red);
+  cursor: pointer;
+  align-self: center;
+  font-size: 1rem;
+  line-height: 1;
+  margin: 20px;
+  padding: 1.2em;
+  text-decoration: none;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.btn:hover,
+.btn:focus {
+  color: #f8f8f8;
+  outline: 0;
+}
+.btn.play {
+  border-color: #38B6FF;
+  color: #fff;
+  box-shadow: 0 0 40px 40px #38B6FF inset, 0 0 0 0 #38B6FF;
+  transition: all 150ms ease-in-out;
+}
+  
+.btn.play:hover {
+  box-shadow: 0 0 10px 0 #38B6FF inset, 0 0 10px 4px #38B6FF;
+}

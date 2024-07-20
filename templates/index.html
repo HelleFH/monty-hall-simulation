@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Monty Hall Problem Simulation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Add your custom CSS styling here */
+        #stats {
+            margin: 20px;
+        }
+        .stat-panel {
+            margin-bottom: 20px;
+        }
+        .stats-item-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .stats-item {
+            margin-right: 20px;
+        }
+        .single-chart {
+            width: 100px;
+            height: 100px;
+            margin-top: 10px;
+        }
+        .circular-chart {
+            display: block;
+            margin: 0 auto;
+        }
+        .circle-bg {
+            fill: none;
+            stroke: #e6e6e6;
+            stroke-width: 3.8;
+        }
+        .circle {
+            fill: none;
+            stroke-width: 3.8;
+            transition: stroke-dasharray 1s ease;
+        }
+        .orange .circle {
+            stroke: #ffa500;
+        }
+        .green .circle {
+            stroke: #4caf50;
+        }
+        .blue .circle {
+            stroke: #2196f3;
+        }
+        .percentage {
+            font-size: 0.6em;
+            fill: #333;
+        }
+        /* Loading spinner styles */
+        .spinner {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .spinner div {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 4px solid #3498db;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#startButton').click(function() {
+                startSimulation();
+            });
+
+            $('#numSimulations').keypress(function(e) {
+                if (e.which === 13) { // Enter key pressed
+                    e.preventDefault(); // Prevent form submission
+                    startSimulation();
+                }
+            });
+
+            function startSimulation() {
+                var numSimulations = $('#numSimulations').val();
+                $('.spinner').show(); // Show the spinner
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/start_simulations',
+                    data: { num_simulations: numSimulations },
+                    success: function(response) {
+                        // Hide the spinner
+                        $('.spinner').hide();
+                        
+                        // Update UI with simulation results
+                        $('#simulationCount').text(response.simulation_count);
+                        $('#totalAttempts').text(response.total_attempts);
+                        $('#totalWinsRandom').text(response.total_wins_random);
+                        $('#totalWinsKeep').text(response.total_wins_keep);
+                        $('#totalWinsSwitch').text(response.total_wins_switch);
+
+                        // Update stats panels
+                        updateStatsPanel('#switches', response.total_wins_switch, response.simulation_count);
+                        updateStatsPanel('#stays', response.total_wins_keep, response.simulation_count);
+                        updateStatsPanel('#random', response.total_wins_random, response.simulation_count);
+
+                        // Plot cumulative success rates
+                        plotCumulativeSuccess(response.history_random, response.history_keep, response.history_switch);
+
+                        // Display all events
+                        displayEvents(response.events_all);
+                    },
+                    error: function() {
+                        // Hide the spinner if there's an error
+                        $('.spinner').hide();
+                        alert('Error occurred while processing the simulation.');
+                    }
+                });
+            }
+
+            function updateStatsPanel(selector, wins, total) {
+                var percentage = (wins / total) * 100;
+                $(selector + ' .total').text(total);
+                
+                // Specific selectors for each strategy
+                if (selector === '#switches') {
+                    $('#switches .wins-switch').text(wins);
+                } else if (selector === '#stays') {
+                    $('#stays .wins-stay').text(wins);
+                } else if (selector === '#random') {
+                    $('#random .wins-random').text(wins);
+                }
+                
+                $(selector + ' .circle').attr('stroke-dasharray', percentage + ', ' + (100 - percentage));
+                $(selector + ' .win-rate').text(percentage.toFixed(1) + '%');
+            }
+
+            function plotCumulativeSuccess(historyRandom, historyKeep, historySwitch) {
+                var x = Array.from(Array(historyRandom.length).keys());
+                var yRandom = historyRandom;
+                var yKeep = historyKeep;
+                var ySwitch = historySwitch;
+
+                var plt = document.createElement('canvas');
+                plt.id = 'cumulativeChart';
+                $('#cumulativeChartContainer').empty().append(plt);
+
+                var ctx = plt.getContext('2d');
+                var chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: x,
+                        datasets: [{
+                            label: 'Random Strategy',
+                            data: yRandom,
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            borderWidth: 1,
+                            fill: false
+                        }, {
+                            label: 'Keep Strategy',
+                            data: yKeep,
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderWidth: 1,
+                            fill: false
+                        }, {
+                            label: 'Switch Strategy',
+                            data: ySwitch,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderWidth: 1,
+                            fill: false
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+
+            function displayEvents(events) {
+                var eventsContainer = $('#eventsContainer');
+                eventsContainer.empty();
+                events.forEach(function(event) {
+                    eventsContainer.append('<p>' + event + '</p>');
+                });
+            }
+        });
+    </script>
+</head>
+<body>
+    <h1>Monty Hall Problem Simulation</h1>
+    <h2>Simulation Controls</h2>
+    <form>
+        Number of Simulations: <input type="text" id="numSimulations"><br><br>
+        <div type="button" id="startButton" class="btn play">Start Simulations</div>
+    </form>
+    <!-- Loading Spinner -->
+    <div class="spinner">
+        <div></div>
+    </div>
+
+    <div id="stats">
+        <h1>Your Game Stats</h1>
+       <h2>Strategy</h2>
+        <div class="strategies-container">
+            <div id="switches" class="stat-panel">
+                <h2> Switch</h2>
+                <div class="stats-item-container">
+                    <div>
+                        <div class="bar" style="width: 0%;"></div>
+                    </div>
+                    <div class="stats-item">
+                        <p>Wins:</p><span class="wins-switch">0</span>
+                    </div>
+                </div>
+                <div class="single-chart">
+                    <svg viewBox="0 0 36 36" class="circular-chart orange">
+                        <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <path class="circle" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <text x="18" y="20.35" class="percentage win-rate switch-rate">0%</text>
+                    </svg>
+                </div>
+            </div>
+
+            <div id="stays" class="stat-panel">
+                <h2> Stay</h2>
+                <div class="stats-item-container">
+                    <div>
+                        <div class="bar" style="width: 0%;"></div>
+                    </div>
+                    <div class="stats-item">
+                        <p>Wins:</p><span class="wins-stay">0</span>
+                    </div>
+                </div>
+                <div class="single-chart">
+                    <svg viewBox="0 0 36 36" class="circular-chart green">
+                        <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <path class="circle" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <text x="18" y="20.35" class="percentage win-rate keep-rate">0%</text>
+                    </svg>
+                </div>
+            </div>
+            <div id="random" class="stat-panel">
+                <h2> Random</h2>
+                <div class="stats-item-container">
+                    <div>
+                        <div class="bar" style="width: 0%;"></div>
+                    </div>
+                    <div class="stats-item">
+                        <p>Wins:</p><span class="wins-random">0</span>
+                    </div>
+                </div>
+                <div class="single-chart">
+                    <svg viewBox="0 0 36 36" class="circular-chart blue">
+                        <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <path class="circle" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <text x="18" y="20.35" class="percentage win-rate random-rate">0%</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2>Simulation History</h2>
+    <div id="cumulativeChartContainer">
+        <canvas id="cumulativeChart" width="800" height="400"></canvas>
+    </div>
+
+</body>
+</html>
