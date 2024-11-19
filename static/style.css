@@ -14,7 +14,7 @@ body {
   font-family: "Signika Negative", sans-serif;
   font-weight: 300;
   margin: 0;
-  padding: 0;
+  padding: 2em;
   background-color: rgb(108, 240, 193, 0.6);
   display: flex;
   flex-direction: column;
@@ -255,6 +255,6 @@ z-index:1;
 
 @media only screen and (max-width: 800px) {
 #stats {
-  width: 96%;
+  width: 100vw;
 }
 }
