@@ -173,7 +173,8 @@ h2 {
   font-weight: 700;
   width: 130px;
   white-space: nowrap;
-
+z-index:1;
+  text-align:center;
   border-radius: 7px;
   background-color: #fff;
   padding: 0.5em;
@@ -216,6 +217,7 @@ h2 {
   width: 3px;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
+  z-index:999;
 }
 
 .btn {
@@ -249,4 +251,10 @@ h2 {
 
 .btn.play:hover {
   box-shadow: 0 0 10px 0 #38B6FF inset, 0 0 10px 4px #38B6FF;
+}
+
+@media only screen and (max-width: 800px) {
+#stats {
+  width: 96%;
+}
 }
